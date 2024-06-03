@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import sys
+import re
 import ipaddress
 import netifaces
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QComboBox, QMessageBox
@@ -19,9 +20,10 @@ class ClickToCopyLineEdit(QLineEdit):
 class LanCalculator(QWidget):
     def __init__(self):
         super().__init__()
-        self.initUI()
+        self.init_ui()
+        self.check_clipboard()
 
-    def initUI(self):
+    def init_ui(self):
         # Main layout
         main_layout = QVBoxLayout()
         self.setWindowTitle('IPv4 LAN Calculator')
@@ -60,7 +62,7 @@ class LanCalculator(QWidget):
         main_layout.addLayout(network_layout)
 
         # Set default values from system
-        self.setDefaultNetworkValues()
+        self.set_default_values()
 
         # Calculate Button
         self.calc_button = QPushButton('Calculate', self)
@@ -93,7 +95,20 @@ class LanCalculator(QWidget):
         # Set Layout
         self.setLayout(main_layout)
 
-    def setDefaultNetworkValues(self):
+    def check_clipboard(self):
+        clipboard = QApplication.clipboard()
+        clipboard_text = clipboard.text()
+
+        # Проверяем, содержит ли буфер обмена IP-адрес с маской
+        match = re.match(r'^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(/(\d{1,2}))?$', clipboard_text)
+        if match:
+            ip_address = match.group(1)
+            cidr = match.group(3)
+            self.ip_input.setText(ip_address)
+            if cidr:
+                self.network_selector.setCurrentIndex(int(cidr))
+
+    def set_default_values(self):
         try:
             gateways = netifaces.gateways()
             default_interface = gateways['default'][netifaces.AF_INET][1]
