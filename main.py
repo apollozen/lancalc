@@ -2,10 +2,18 @@
 # -*- coding: utf-8 -*-
 import sys
 import ipaddress
-import netifaces
+import netifaces as ni
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QComboBox, QMessageBox
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
+
+class ClickToCopyLineEdit(QLineEdit):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+    def mousePressEvent(self, event):
+        QApplication.clipboard().setText(self.text())
+        super().mousePressEvent(event)
 
 class LanCalculator(QWidget):
     def __init__(self):
@@ -60,11 +68,11 @@ class LanCalculator(QWidget):
         main_layout.addWidget(self.calc_button)
 
         # Output fields initialization
-        self.network_output = QLineEdit(self)
-        self.broadcast_output = QLineEdit(self)
-        self.hostmin_output = QLineEdit(self)
-        self.hostmax_output = QLineEdit(self)
-        self.hosts_output = QLineEdit(self)
+        self.network_output = ClickToCopyLineEdit(self)
+        self.broadcast_output = ClickToCopyLineEdit(self)
+        self.hostmin_output = ClickToCopyLineEdit(self)
+        self.hostmax_output = ClickToCopyLineEdit(self)
+        self.hosts_output = ClickToCopyLineEdit(self)
 
         # Apply read-only style and add output fields to the layout
         for field in [self.network_output, self.broadcast_output, self.hostmin_output, self.hostmax_output, self.hosts_output]:
@@ -86,10 +94,10 @@ class LanCalculator(QWidget):
 
     def set_default_values(self):
         try:
-            gateways = netifaces.gateways()
-            default_interface = gateways['default'][netifaces.AF_INET][1]
-            addrs = netifaces.ifaddresses(default_interface)
-            ip_info = addrs[netifaces.AF_INET][0]
+            gateways = ni.gateways()
+            default_interface = gateways['default'][ni.AF_INET][1]
+            addrs = ni.ifaddresses(default_interface)
+            ip_info = addrs[ni.AF_INET][0]
             default_ip = ip_info['addr']
             netmask = ip_info['netmask']
             default_cidr = sum([bin(int(x)).count('1') for x in netmask.split('.')])
