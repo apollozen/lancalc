@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import ipaddress
-import netifaces as ni
+import netifaces
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QComboBox, QMessageBox
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
@@ -12,8 +12,9 @@ class ClickToCopyLineEdit(QLineEdit):
         super().__init__(parent)
 
     def mousePressEvent(self, event):
-        QApplication.clipboard().setText(self.text())
-        super().mousePressEvent(event)
+        super().mousePressEvent(event)  # Call base class to handle the event
+        self.selectAll()                 # Select all text in the field
+        QApplication.clipboard().setText(self.text())  # Copy text to clipboard
 
 class LanCalculator(QWidget):
     def __init__(self):
@@ -59,7 +60,7 @@ class LanCalculator(QWidget):
         main_layout.addLayout(network_layout)
 
         # Set default values from system
-        self.set_default_values()
+        self.setDefaultNetworkValues()
 
         # Calculate Button
         self.calc_button = QPushButton('Calculate', self)
@@ -92,12 +93,12 @@ class LanCalculator(QWidget):
         # Set Layout
         self.setLayout(main_layout)
 
-    def set_default_values(self):
+    def setDefaultNetworkValues(self):
         try:
-            gateways = ni.gateways()
-            default_interface = gateways['default'][ni.AF_INET][1]
-            addrs = ni.ifaddresses(default_interface)
-            ip_info = addrs[ni.AF_INET][0]
+            gateways = netifaces.gateways()
+            default_interface = gateways['default'][netifaces.AF_INET][1]
+            addrs = netifaces.ifaddresses(default_interface)
+            ip_info = addrs[netifaces.AF_INET][0]
             default_ip = ip_info['addr']
             netmask = ip_info['netmask']
             default_cidr = sum([bin(int(x)).count('1') for x in netmask.split('.')])
