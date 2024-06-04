@@ -17,7 +17,7 @@ class ClickToCopyLineEdit(QLineEdit):
         self.selectAll()                 # Select all text in the field
         QApplication.clipboard().setText(self.text())  # Copy text to clipboard
 
-class LanCalculator(QWidget):
+class LanCalc(QWidget):
     def __init__(self):
         super().__init__()
         self.init_ui()
@@ -26,7 +26,7 @@ class LanCalculator(QWidget):
     def init_ui(self):
         # Main layout
         main_layout = QVBoxLayout()
-        self.setWindowTitle('IPv4 LAN Calculator')
+        self.setWindowTitle('LanCalc')
 
         # Define the width for all input elements and font
         input_width = 200
@@ -92,6 +92,13 @@ class LanCalculator(QWidget):
         self.add_output_field(main_layout, "Hostmax", self.hostmax_output)
         self.add_output_field(main_layout, "Hosts", self.hosts_output)
 
+        # add link to the repository
+        self.link_label = QLabel('<a href="https://github.com/KPbICO6Ou/lancalc">LanCalc v0.1.0</a>')
+        self.link_label.setOpenExternalLinks(True)
+        self.link_label.setAlignment(Qt.AlignCenter)
+        self.link_label.setFont(QFont('Ubuntu', 11))
+        main_layout.addWidget(self.link_label)
+
         # Set Layout
         self.setLayout(main_layout)
 
@@ -99,7 +106,7 @@ class LanCalculator(QWidget):
         clipboard = QApplication.clipboard()
         clipboard_text = clipboard.text()
 
-        # Проверяем, содержит ли буфер обмена IP-адрес с маской
+        # Checking whether the clipboard contains an IP address with a mask
         match = re.match(r'^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(/(\d{1,2}))?$', clipboard_text)
         if match:
             ip_address = match.group(1)
@@ -149,6 +156,6 @@ class LanCalculator(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    ex = LanCalculator()
+    ex = LanCalc()
     ex.show()
     sys.exit(app.exec_())
