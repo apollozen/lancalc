@@ -10,6 +10,8 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QFont, QKeyEvent
 
+VERSION = '0.1.2'
+
 class ClickToCopyLineEdit(QLineEdit):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -106,7 +108,7 @@ class LanCalc(QWidget):
         self.add_output_field(main_layout, "Hosts", self.hosts_output)
 
         # add link to the repository
-        self.link_label = QLabel('<a href="https://github.com/KPbICO6Ou/lancalc">LanCalc 0.1.1</a>')
+        self.link_label = QLabel(f'<a href="https://github.com/KPbICO6Ou/lancalc">LanCalc {VERSION}</a>')
         self.link_label.setOpenExternalLinks(True)
         self.link_label.setAlignment(Qt.AlignCenter)
         self.link_label.setFont(QFont('Ubuntu', 11))
@@ -174,8 +176,6 @@ class LanCalc(QWidget):
             self.calculate_network()
         else:
             super().keyPressEvent(event)
-
-
 
 
 if __name__ == "__main__":
