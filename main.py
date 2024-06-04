@@ -93,7 +93,7 @@ class LanCalc(QWidget):
         self.add_output_field(main_layout, "Hosts", self.hosts_output)
 
         # add link to the repository
-        self.link_label = QLabel('<a href="https://github.com/KPbICO6Ou/lancalc">LanCalc v0.1.0</a>')
+        self.link_label = QLabel('<a href="https://github.com/KPbICO6Ou/lancalc">LanCalc 0.1.0</a>')
         self.link_label.setOpenExternalLinks(True)
         self.link_label.setAlignment(Qt.AlignCenter)
         self.link_label.setFont(QFont('Ubuntu', 11))
