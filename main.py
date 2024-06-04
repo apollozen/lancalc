@@ -106,7 +106,7 @@ class LanCalc(QWidget):
         clipboard = QApplication.clipboard()
         clipboard_text = clipboard.text()
 
-        # Проверяем, содержит ли буфер обмена IP-адрес с маской
+        # Checking whether the clipboard contains an IP address with a mask
         match = re.match(r'^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(/(\d{1,2}))?$', clipboard_text)
         if match:
             ip_address = match.group(1)
