@@ -4,7 +4,9 @@ import sys
 import re
 import ipaddress
 import netifaces
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QComboBox, QMessageBox
+from PyQt5.QtWidgets import (
+    QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QComboBox, QMessageBox
+)
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 
@@ -30,7 +32,7 @@ class LanCalc(QWidget):
 
         # Define the width for all input elements and font
         input_width = 200
-        font = QFont('Ubuntu', 13)
+        font = QFont('Ubuntu', 12)
 
         # Style for read-only fields
         readonly_style = "QLineEdit { background-color: #f0f0f0; color: #333; text-align: right; }"
@@ -49,7 +51,7 @@ class LanCalc(QWidget):
 
         # Network Mask Selector
         network_layout = QHBoxLayout()
-        network_label = QLabel("Network")
+        network_label = QLabel("Subnet")
         network_label.setFont(font)
         self.network_selector = QComboBox(self)
         self.network_selector.setFont(font)
@@ -72,13 +74,22 @@ class LanCalc(QWidget):
 
         # Output fields initialization
         self.network_output = ClickToCopyLineEdit(self)
+        self.prefix_output = ClickToCopyLineEdit(self)
+        self.netmask_output = ClickToCopyLineEdit(self)
         self.broadcast_output = ClickToCopyLineEdit(self)
         self.hostmin_output = ClickToCopyLineEdit(self)
         self.hostmax_output = ClickToCopyLineEdit(self)
         self.hosts_output = ClickToCopyLineEdit(self)
 
         # Apply read-only style and add output fields to the layout
-        for field in [self.network_output, self.broadcast_output, self.hostmin_output, self.hostmax_output, self.hosts_output]:
+        for field in [
+                self.network_output,
+                self.prefix_output,
+                self.netmask_output,
+                self.broadcast_output,
+                self.hostmin_output,
+                self.hostmax_output,
+                self.hosts_output]:
             field.setReadOnly(True)
             field.setStyleSheet(readonly_style)
             field.setAlignment(Qt.AlignRight)  # Align text to the right
@@ -87,6 +98,8 @@ class LanCalc(QWidget):
 
         # Adding output fields to the layout
         self.add_output_field(main_layout, "Network", self.network_output)
+        self.add_output_field(main_layout, "Prefix", self.prefix_output)
+        self.add_output_field(main_layout, "Netmask", self.netmask_output)
         self.add_output_field(main_layout, "Broadcast", self.broadcast_output)
         self.add_output_field(main_layout, "Hostmin", self.hostmin_output)
         self.add_output_field(main_layout, "Hostmax", self.hostmax_output)
@@ -147,6 +160,8 @@ class LanCalc(QWidget):
 
             # Set results in the output fields
             self.network_output.setText(str(network.network_address))
+            self.prefix_output.setText(f"/{network.prefixlen}")
+            self.netmask_output.setText(str(network.netmask))
             self.broadcast_output.setText(str(network.broadcast_address))
             self.hostmin_output.setText(str(min(network.hosts(), default='N/A')))
             self.hostmax_output.setText(str(max(network.hosts(), default='N/A')))
