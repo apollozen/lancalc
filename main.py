@@ -7,8 +7,8 @@ import netifaces
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QComboBox, QMessageBox
 )
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont
+from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtGui import QFont, QKeyEvent
 
 class ClickToCopyLineEdit(QLineEdit):
     def __init__(self, parent=None):
@@ -168,6 +168,15 @@ class LanCalc(QWidget):
             self.hosts_output.setText(str(network.num_addresses - 2 if network.num_addresses > 2 else 'N/A'))
         except ValueError as e:
             QMessageBox.critical(self, 'Error', str(e))
+
+    def keyPressEvent(self, event: QKeyEvent):
+        if event.key() == Qt.Key_Return:
+            self.calculate_network()
+        else:
+            super().keyPressEvent(event)
+
+
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
