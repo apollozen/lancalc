@@ -154,7 +154,7 @@ class LanCalc(QWidget):
         field_layout.addWidget(line_edit)
         layout.addLayout(field_layout)
 
-    def calculate_network(self):
+    def calculate_network(self, *args, **kwargs):
         try:
             ip_addr = self.ip_input.text()
             network_cidr = int(self.network_selector.currentText().split('/')[0])
