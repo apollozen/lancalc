@@ -3,6 +3,7 @@
 import sys
 import re
 import ipaddress
+import iptools
 import netifaces
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QComboBox, QMessageBox
@@ -10,7 +11,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QFont, QKeyEvent
 
-VERSION = '0.1.2'
+VERSION = '0.1.3'
 
 class ClickToCopyLineEdit(QLineEdit):
     def __init__(self, parent=None):
@@ -157,17 +158,17 @@ class LanCalc(QWidget):
     def calculate_network(self, *args, **kwargs):
         try:
             ip_addr = self.ip_input.text()
-            network_cidr = int(self.network_selector.currentText().split('/')[0])
-            network = ipaddress.IPv4Network(f'{ip_addr}/{network_cidr}', strict=False)
-
-            # Set results in the output fields
-            self.network_output.setText(str(network.network_address))
-            self.prefix_output.setText(f"/{network.prefixlen}")
-            self.netmask_output.setText(str(network.netmask))
-            self.broadcast_output.setText(str(network.broadcast_address))
-            self.hostmin_output.setText(str(min(network.hosts(), default='N/A')))
-            self.hostmax_output.setText(str(max(network.hosts(), default='N/A')))
-            self.hosts_output.setText(str(network.num_addresses - 2 if network.num_addresses > 2 else 'N/A'))
+            prefix, netmask = self.network_selector.currentText().split('/')
+            rang = iptools.IpRange(f'{ip_addr}/{prefix}')
+            self.network_output.setText(rang[0] if rang.__len__() > 0 else '-')
+            self.broadcast_output.setText(rang[-1] if rang.__len__() > 2 else '-')
+            self.prefix_output.setText(f"/{prefix}")
+            self.netmask_output.setText(netmask)
+            self.hostmin_output.setText(rang[1] if rang.__len__() > 2 else rang[0])
+            self.hostmax_output.setText(rang[-2] if rang.__len__() > 2 else rang[-1])
+            hosts = rang.__len__() - 2 if rang.__len__() > 2 else rang.__len__()
+            hosts = str(hosts) if rang.__len__() > 2 else f"{hosts}*"
+            self.hosts_output.setText(hosts)
         except ValueError as e:
             QMessageBox.critical(self, 'Error', str(e))
 
