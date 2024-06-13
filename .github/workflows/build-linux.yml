@@ -20,11 +20,17 @@ jobs:
       with:
         python-version: 3.x
     - name: Install requirements.txt
-      run: | 
+      run: |
+        set -eux
         python3 -m pip install -r requirements.txt
     - name: Build binary with PyInstaller
       run: |
+        set -eux
         python3 -m PyInstaller --onefile --windowed main.py --name lancalc
+    - name: List artifacts
+      run: |
+        set -eux
+        tree
 
   release:
     needs: build
