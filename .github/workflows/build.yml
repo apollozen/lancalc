@@ -106,7 +106,7 @@ jobs:
         draft: true
         prerelease: false
         files: |
-          dist/lancalc-linux/lancalc-linux
-          dist/lancalc-macos/lancalc-macos
-          dist/lancalc-windows/lancalc-windows.exe
+          dist/lancalc-linux
+          dist/lancalc-macos
+          dist/lancalc-windows.exe
 
