@@ -56,9 +56,11 @@ jobs:
           python3 -m pip install -r requirements.txt
       - name: Build binary with PyInstaller
         run: |
+          set -eux
           python3 -m PyInstaller --onefile --windowed main.py --name lancalc
       - name: Zip binary
         run: |
+          set -eux
           zip -rm dist/lancalc-macos.zip dist/lancalc
       - name: List artifacts
         run: |
@@ -86,8 +88,9 @@ jobs:
         run: |
           python -m PyInstaller --onefile --windowed main.py --name lancalc.exe
       - name: Zip binary
+        shell: pwsh
         run: |
-          zip -rm dist/lancalc-windows.zip dist/lancalc.exe
+          Compress-Archive -Path dist/lancalc.exe -DestinationPath dist/lancalc-windows.zip
       - name: Upload artifact for Windows
         uses: actions/upload-artifact@v2
         with:
