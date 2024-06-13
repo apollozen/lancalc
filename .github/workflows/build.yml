@@ -95,7 +95,9 @@ jobs:
       with:
         path: dist
     - name: List artifacts
-      run: ls -R dist/
+      run: |
+        set -eux
+        tree
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
