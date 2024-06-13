@@ -41,7 +41,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: lancalc-linux
-        path: dist/lancalc-linux
+        path: dist/
 
   build-macos:
     runs-on: macos-latest
@@ -71,7 +71,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: lancalc-macos
-          path: dist/lancalc-macos
+          path: dist/
 
   build-windows:
     runs-on: windows-latest
@@ -97,7 +97,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: lancalc-windows
-          path: dist/lancalc-windows.exe
+          path: dist/
 
   release:
     needs: [build-linux, build-windows, build-macos]
