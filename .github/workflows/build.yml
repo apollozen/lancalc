@@ -1,4 +1,4 @@
-name: Build Linux
+name: Build Release
 on:
   # push:
   #  tags:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'build version'
+        description: 'version'
         required: true
         default: '0.1.0'
 jobs:
@@ -82,6 +82,10 @@ jobs:
       - name: Build binary with PyInstaller
         run: |
           python3 -m PyInstaller --onefile --windowed main.py --name lancalc
+      - name: List artifacts
+        run: |
+          set -eux
+          tree
       - name: Release macOS
         uses: softprops/action-gh-release@v2
         with:
