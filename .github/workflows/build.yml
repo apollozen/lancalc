@@ -12,6 +12,8 @@ on:
 jobs:
   build-linux:
     runs-on: ubuntu-latest
+    outputs:
+      artifact: ${{ steps.build.outputs.artifact-path }}
     steps:
     - name: Check out code
       uses: actions/checkout@v2
@@ -26,24 +28,19 @@ jobs:
     - name: Build binary with PyInstaller
       run: |
         set -eux
-        python3 -m PyInstaller --onefile --windowed main.py --name lancalc
+        python3 -m PyInstaller --onefile --windowed main.py --name lancalc-linux
     - name: List artifacts
       run: |
         set -eux
         tree
-    - name: Release
-      uses: softprops/action-gh-release@v2
-      with:
-        name: Linux Release ${{ github.event.inputs.version }}
-        tag_name: linux-${{ github.event.inputs.version }}
-        body: 'Linux Release ${{ github.event.inputs.version }}'
-        draft: true
-        prerelease: false
-        files: |
-          dist/lancalc
+    - name: Build artifact output
+      id: build
+      run: echo "::set-output name=artifact-path::$(pwd)/dist/lancalc-linux"
 
   build-windows:
     runs-on: windows-latest
+    outputs:
+      artifact: ${{ steps.build.outputs.artifact-path }}
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -56,19 +53,17 @@ jobs:
           python -m pip install -r requirements.txt
       - name: Build binary with PyInstaller
         run: |
-          python -m PyInstaller --onefile --windowed main.py --name lancalc.exe
-      - name: Release Windows
-        uses: softprops/action-gh-release@v2
-        with:
-          name: Windows Release ${{ github.event.inputs.version }}
-          tag_name: windows-${{ github.event.inputs.version }}
-          body: 'Windows Release ${{ github.event.inputs.version }}'
-          draft: true
-          prerelease: false
-          files: dist/lancalc.exe
+          python -m PyInstaller --onefile --windowed main.py --name lancalc-windows.exe
+      - name: Build artifact output
+        id: build
+        run: echo "::set-output name=artifact-path::$(pwd)/dist/lancalc-windows.exe"
+
+
 
   build-macos:
     runs-on: macos-latest
+    outputs:
+      artifact: ${{ steps.build.outputs.artifact-path }}
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -81,17 +76,32 @@ jobs:
           python3 -m pip install -r requirements.txt
       - name: Build binary with PyInstaller
         run: |
-          python3 -m PyInstaller --onefile --windowed main.py --name lancalc
+          python3 -m PyInstaller --onefile --windowed main.py --name lancalc-macos
       - name: List artifacts
         run: |
           set -eux
           ls -lah dist
-      - name: Release macOS
-        uses: softprops/action-gh-release@v2
-        with:
-          name: macOS Release ${{ github.event.inputs.version }}
-          tag_name: macos-${{ github.event.inputs.version }}
-          body: 'macOS Release ${{ github.event.inputs.version }}'
-          draft: true
-          prerelease: false
-          files: dist/lancalc
+      - name: Build artifact output
+        id: build
+        run: echo "::set-output name=artifact-path::$(pwd)/dist/lancalc-macos"
+
+  create-release:
+    needs: [build-linux, build-windows, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v2
+      with:
+        path: dist
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        name: Release ${{ github.event.inputs.version }}
+        tag_name: ${{ github.event.inputs.version }}
+        body: 'Release ${{ github.event.inputs.version }}'
+        draft: true
+        prerelease: false
+        files: |
+          dist/lancalc-linux
+          dist/lancalc-windows.exe
+          dist/lancalc-macos
