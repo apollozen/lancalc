@@ -35,6 +35,7 @@ jobs:
     - name: Upload artifact for Linux
       uses: actions/upload-artifact@v2
       with:
+        # name: artifact
         path: dist/
 
   build-macos:
@@ -59,6 +60,7 @@ jobs:
       - name: Upload artifact for MacOS
         uses: actions/upload-artifact@v2
         with:
+          # name: artifact
           path: dist/
 
   build-windows:
@@ -79,6 +81,7 @@ jobs:
       - name: Upload artifact for Windows
         uses: actions/upload-artifact@v2
         with:
+          # name: artifact
           path: dist/
 
   release:
@@ -92,6 +95,7 @@ jobs:
     - name: Download artifacts
       uses: actions/download-artifact@v2
       with:
+        # name: artifact
         path: dist
     - name: List artifacts
       run: |
@@ -106,7 +110,7 @@ jobs:
         draft: true
         prerelease: false
         files: |
-          dist/lancalc-linux
-          dist/lancalc-macos
-          dist/lancalc-windows.exe
+          dist/artifact/lancalc-linux
+          dist/artifact/lancalc-macos
+          dist/artifact/lancalc-windows.exe
 
