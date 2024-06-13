@@ -126,3 +126,4 @@ jobs:
           dist/artifact/lancalc-windows.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
