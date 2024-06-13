@@ -100,8 +100,6 @@ jobs:
   release:
     needs: [build-linux, build-windows, build-macos]
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -126,4 +124,5 @@ jobs:
           dist/artifact/lancalc-linux.zip
           dist/artifact/lancalc-macos.zip
           dist/artifact/lancalc-windows.zip
-
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
