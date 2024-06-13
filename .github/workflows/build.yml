@@ -85,7 +85,7 @@ jobs:
       - name: List artifacts
         run: |
           set -eux
-          tree
+          ls -lah dist
       - name: Release macOS
         uses: softprops/action-gh-release@v2
         with:
