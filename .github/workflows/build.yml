@@ -27,7 +27,11 @@ jobs:
     - name: Build binary with PyInstaller
       run: |
         set -eux
-        python3 -m PyInstaller --onefile --windowed main.py --name lancalc-linux
+        python3 -m PyInstaller --onefile --windowed main.py --name lancalc
+    - name: Zip binary
+      run: |
+        set -eux
+        zip -r dist/lancalc-linux.zip dist/lancalc
     - name: List artifacts
       run: |
         set -eux
@@ -52,7 +56,10 @@ jobs:
           python3 -m pip install -r requirements.txt
       - name: Build binary with PyInstaller
         run: |
-          python3 -m PyInstaller --onefile --windowed main.py --name lancalc-macos
+          python3 -m PyInstaller --onefile --windowed main.py --name lancalc
+      - name: Zip binary
+        run: |
+          zip -r dist/lancalc-macos.zip dist/lancalc
       - name: List artifacts
         run: |
           set -eux
@@ -77,7 +84,10 @@ jobs:
           python -m pip install -r requirements.txt
       - name: Build binary with PyInstaller
         run: |
-          python -m PyInstaller --onefile --windowed main.py --name lancalc-windows.exe
+          python -m PyInstaller --onefile --windowed main.py --name lancalc.exe
+      - name: Zip binary
+        run: |
+          zip -r dist/lancalc-windows.zip dist/lancalc.exe
       - name: Upload artifact for Windows
         uses: actions/upload-artifact@v2
         with:
@@ -110,7 +120,7 @@ jobs:
         draft: true
         prerelease: false
         files: |
-          dist/artifact/lancalc-linux
-          dist/artifact/lancalc-macos
-          dist/artifact/lancalc-windows.exe
+          dist/artifact/lancalc-linux.zip
+          dist/artifact/lancalc-macos.zip
+          dist/artifact/lancalc-windows.zip
 
