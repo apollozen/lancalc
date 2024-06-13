@@ -13,8 +13,8 @@ jobs:
 
   build-linux:
     runs-on: ubuntu-latest
-    outputs:
-      artifact: ${{ steps.build.outputs.artifact-path }}
+    # outputs:
+    #  artifact: ${{ steps.build.outputs.artifact-path }}
     steps:
     - name: Check out code
       uses: actions/checkout@v2
@@ -34,9 +34,9 @@ jobs:
       run: |
         set -eux
         tree
-    - name: Build artifact output
-      id: build
-      run: echo "artifact-linux=$(pwd)/dist/lancalc-linux" >> $GITHUB_ENV
+    #- name: Build artifact output
+    #  id: build
+    #  run: echo "artifact-linux=$(pwd)/dist/lancalc-linux" >> $GITHUB_ENV
     - name: Upload artifact for Linux
       uses: actions/upload-artifact@v2
       with:
@@ -45,8 +45,8 @@ jobs:
 
   build-macos:
     runs-on: macos-latest
-    outputs:
-      artifact: ${{ steps.build.outputs.artifact-path }}
+    # outputs:
+    #  artifact: ${{ steps.build.outputs.artifact-path }}
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -64,9 +64,9 @@ jobs:
         run: |
           set -eux
           ls -lah dist
-      - name: Build artifact output
-        id: build
-        run: echo "artifact-macos=$(pwd)/dist/lancalc-macos" >> $GITHUB_ENV
+      #- name: Build artifact output
+      #  id: build
+      #  run: echo "artifact-macos=$(pwd)/dist/lancalc-macos" >> $GITHUB_ENV
       - name: Upload artifact for MacOS
         uses: actions/upload-artifact@v2
         with:
@@ -75,8 +75,8 @@ jobs:
 
   build-windows:
     runs-on: windows-latest
-    outputs:
-      artifact: ${{ steps.build.outputs.artifact-path }}
+    # outputs:
+    #  artifact: ${{ steps.build.outputs.artifact-path }}
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -90,9 +90,9 @@ jobs:
       - name: Build binary with PyInstaller
         run: |
           python -m PyInstaller --onefile --windowed main.py --name lancalc-windows.exe
-      - name: Build artifact output
-        id: build
-        run: echo "artifact-windows=$(pwd)/dist/lancalc-windows.exe" >> $GITHUB_ENV
+      #- name: Build artifact output
+      #  id: build
+      #  run: echo "artifact-windows=$(pwd)/dist/lancalc-windows.exe" >> $GITHUB_ENV
       - name: Upload artifact for Windows
         uses: actions/upload-artifact@v2
         with:
