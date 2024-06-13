@@ -31,19 +31,14 @@ jobs:
       run: |
         set -eux
         tree
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Release
-        uses: softprops/action-gh-release@v2
-        with:
-          name: ${{ inputs.version }}
-          tag_name: ${{ inputs.version }}
-          body: |
-            ${{ inputs.version }}
-          draft: true
-          prerelease: false
-          files: |
-            ./dist/lancalc
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      with:
+        name: ${{ inputs.version }}
+        tag_name: ${{ inputs.version }}
+        body: |
+          ${{ inputs.version }}
+        draft: true
+        prerelease: false
+        files: |
+          dist/lancalc
