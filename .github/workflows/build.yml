@@ -10,6 +10,7 @@ on:
         required: true
         default: '0.1.0'
 jobs:
+
   build-linux:
     runs-on: ubuntu-latest
     outputs:
@@ -58,8 +59,6 @@ jobs:
         id: build
         run: echo "::set-output name=artifact-path::$(pwd)/dist/lancalc-windows.exe"
 
-
-
   build-macos:
     runs-on: macos-latest
     outputs:
@@ -85,14 +84,18 @@ jobs:
         id: build
         run: echo "::set-output name=artifact-path::$(pwd)/dist/lancalc-macos"
 
-  create-release:
+  release:
     needs: [build-linux, build-windows, build-macos]
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
     - name: Download artifacts
       uses: actions/download-artifact@v2
       with:
         path: dist
+    - name: List artifacts
+      run: ls -R dist/
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
@@ -103,5 +106,5 @@ jobs:
         prerelease: false
         files: |
           dist/lancalc-linux
-          dist/lancalc-windows.exe
           dist/lancalc-macos
+          dist/lancalc-windows.exe
