@@ -31,7 +31,7 @@ jobs:
     - name: Zip binary
       run: |
         set -eux
-        zip -r dist/lancalc-linux.zip dist/lancalc
+        zip -rm dist/lancalc-linux.zip dist/lancalc
     - name: List artifacts
       run: |
         set -eux
@@ -59,7 +59,7 @@ jobs:
           python3 -m PyInstaller --onefile --windowed main.py --name lancalc
       - name: Zip binary
         run: |
-          zip -r dist/lancalc-macos.zip dist/lancalc
+          zip -rm dist/lancalc-macos.zip dist/lancalc
       - name: List artifacts
         run: |
           set -eux
@@ -87,7 +87,7 @@ jobs:
           python -m PyInstaller --onefile --windowed main.py --name lancalc.exe
       - name: Zip binary
         run: |
-          zip -r dist/lancalc-windows.zip dist/lancalc.exe
+          zip -rm dist/lancalc-windows.zip dist/lancalc.exe
       - name: Upload artifact for Windows
         uses: actions/upload-artifact@v2
         with:
