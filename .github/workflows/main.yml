@@ -2,13 +2,17 @@ name: Build
 on:
   # push:
   #  tags:
-  #    - '0.1.*'
+  #   - '0.1.*'
+  #  branches:
+  #   - main
   workflow_dispatch:
     inputs:
       version:
         description: 'version'
         required: true
         default: '0.1.0'
+permissions:
+  contents: write
 jobs:
 
   build-linux:
