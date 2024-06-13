@@ -9,6 +9,8 @@ on:
         description: 'version'
         required: true
         default: '0.1.0'
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
 
   build-linux:
@@ -36,28 +38,7 @@ jobs:
         tree
     - name: Build artifact output
       id: build
-      run: echo "::set-output name=artifact-path::$(pwd)/dist/lancalc-linux"
-
-  build-windows:
-    runs-on: windows-latest
-    outputs:
-      artifact: ${{ steps.build.outputs.artifact-path }}
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Set up Python 3
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.x
-      - name: Install requirements
-        run: |
-          python -m pip install -r requirements.txt
-      - name: Build binary with PyInstaller
-        run: |
-          python -m PyInstaller --onefile --windowed main.py --name lancalc-windows.exe
-      - name: Build artifact output
-        id: build
-        run: echo "::set-output name=artifact-path::$(pwd)/dist/lancalc-windows.exe"
+      run: echo "artifact-linux=$(pwd)/dist/lancalc-linux" >> $GITHUB_ENV
 
   build-macos:
     runs-on: macos-latest
@@ -82,7 +63,28 @@ jobs:
           ls -lah dist
       - name: Build artifact output
         id: build
-        run: echo "::set-output name=artifact-path::$(pwd)/dist/lancalc-macos"
+        run: echo "artifact-macos=$(pwd)/dist/lancalc-macos" >> $GITHUB_ENV
+
+  build-windows:
+    runs-on: windows-latest
+    outputs:
+      artifact: ${{ steps.build.outputs.artifact-path }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Set up Python 3
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      - name: Install requirements
+        run: |
+          python -m pip install -r requirements.txt
+      - name: Build binary with PyInstaller
+        run: |
+          python -m PyInstaller --onefile --windowed main.py --name lancalc-windows.exe
+      - name: Build artifact output
+        id: build
+        run: echo "artifact-windows=$(pwd)/dist/lancalc-windows.exe" >> $GITHUB_ENV
 
   release:
     needs: [build-linux, build-windows, build-macos]
