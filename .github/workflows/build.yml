@@ -9,8 +9,6 @@ on:
         description: 'version'
         required: true
         default: '0.1.0'
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
 
   build-linux:
@@ -39,6 +37,11 @@ jobs:
     - name: Build artifact output
       id: build
       run: echo "artifact-linux=$(pwd)/dist/lancalc-linux" >> $GITHUB_ENV
+    - name: Upload artifact for Linux
+      uses: actions/upload-artifact@v2
+      with:
+        name: lancalc-linux
+        path: dist/lancalc-linux
 
   build-macos:
     runs-on: macos-latest
@@ -64,6 +67,11 @@ jobs:
       - name: Build artifact output
         id: build
         run: echo "artifact-macos=$(pwd)/dist/lancalc-macos" >> $GITHUB_ENV
+      - name: Upload artifact for MacOS
+        uses: actions/upload-artifact@v2
+        with:
+          name: lancalc-macos
+          path: dist/lancalc-macos
 
   build-windows:
     runs-on: windows-latest
@@ -85,10 +93,17 @@ jobs:
       - name: Build artifact output
         id: build
         run: echo "artifact-windows=$(pwd)/dist/lancalc-windows.exe" >> $GITHUB_ENV
+      - name: Upload artifact for Windows
+        uses: actions/upload-artifact@v2
+        with:
+          name: lancalc-windows
+          path: dist/lancalc-windows.exe
 
   release:
     needs: [build-linux, build-windows, build-macos]
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -112,3 +127,4 @@ jobs:
           dist/lancalc-linux
           dist/lancalc-macos
           dist/lancalc-windows.exe
+
